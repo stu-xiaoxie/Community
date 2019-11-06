@@ -2,6 +2,7 @@ package com.xiaoxie.community.provider;
 
 import com.alibaba.fastjson.JSON;
 import com.xiaoxie.community.dto.AccessTokenDTO;
+import com.xiaoxie.community.dto.GithubUser;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class GithubProvider {
     }
 
 
-   /* public GithubUser getUser(String accessToken) {
+    public GithubUser getUser(String accessToken) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url("https://api.github.com/user?access_token=" + accessToken)
@@ -40,9 +41,9 @@ public class GithubProvider {
             GithubUser githubUser = JSON.parseObject(string, GithubUser.class);
             return githubUser;
         } catch (Exception e) {
-            log.error("getUser error,{}", accessToken, e);
+            //log.error("getUser error,{}", accessToken, e);
         }
         return null;
-    }*/
+    }
 
 }
