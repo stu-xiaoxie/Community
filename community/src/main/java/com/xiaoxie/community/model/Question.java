@@ -330,4 +330,20 @@ public class Question {
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
     }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", creator=" + creator +
+                ", commentCount=" + commentCount +
+                ", viewCount=" + viewCount +
+                ", likeCount=" + likeCount +
+                ", tag='" + tag + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

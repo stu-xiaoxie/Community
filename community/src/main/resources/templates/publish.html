@@ -17,7 +17,7 @@
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only">软协社区</span>
             </button>
-            <a class="navbar-brand" href="#">软协社区</a>
+            <a class="navbar-brand" href="/">软协社区</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -29,7 +29,10 @@
                 <button type="submit" class="btn btn-default">搜索</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
-<!--                <li><a th:href="@{https://github.com/login/oauth/authorize(client_id='5fa5f2f167ff1c290f1b',redirect_uri='http://localhost:8888/callback',scope='user',state=1)}">登录</a></li>-->
+                <li th:if="${session.user != null}">
+                    <a href="/publish">发布</a>
+                </li>
+                <li cla
                 <li class="dropdown" th:if="${session.user != null}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="${session.user.getName()}"> <span class="caret"></span></a>
                     <ul class="dropdown-menu">
@@ -48,23 +51,38 @@
 <div class="container-fluid main">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-            <h2><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>发起</h2>
+            <h2><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;发起</h2>
             <hr/>
 
-            <form action="#">
+            <form action="/publish" method="post">
                 <div class="form-group">
-                    <label for="title">问题标题（简单点）</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="……问题标题……">
+                    <label for="title">问题标题（简单明了）</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="问题标题……" th:value="${title}"><!--使用value进行数据回显-->
                 </div>
                 <div class="form-group">
-                    <label for="title">问题补充（必填）</label>
-                    <textarea name="description" class="form-control" id="description" cols="30" rows="10"></textarea>
+                    <label for="description">问题补充（必填）</label>
+                    <textarea name="description" class="form-control" id="description" cols="30" rows="10" th:text="${description}"></textarea><!--使用text进行数据回显-->
                 </div>
                 <div class="form-group">
-                    <label for="title">添加标签</label>
-                    <input type="text" class="form-control" id="tag" name="tag" placeholder="输入标签">
+                    <label for="tag">添加标签</label>
+                    <input type="text" class="form-control" id="tag" name="tag" placeholder="输入标签" th:value="${tag}">
                 </div>
-                <button type="submit" class="btn btn-success btn-publish">发布</button>
+
+                <div class="container-fluid main ">
+                    <div class="row">
+                        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                            <div class="alert alert-danger col-lg-12 col-md-12 col-sm-12 col-xs-12"
+                                 th:text="${error}"
+                                 th:if="${error != null}">
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                            <button type="submit" class="btn btn-success btn-publish ">
+                                发布
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
