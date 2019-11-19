@@ -1,12 +1,14 @@
 package com.xiaoxie.community.controller;
 
-import com.xiaoxie.community.mapper.QuestionMapper;
+import com.xiaoxie.community.dto.QuestionDTO;
 import com.xiaoxie.community.model.Question;
 import com.xiaoxie.community.model.User;
+import com.xiaoxie.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -15,8 +17,19 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class PublishController {
     @Autowired
-    private QuestionMapper questionMapper;
+    private QuestionService questionService;
 
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable(name = "id") Long id,Model model){
+
+        QuestionDTO question = questionService.getById(id);
+        model.addAttribute("title",question.getTitle());
+        model.addAttribute("description",question.getDescription());
+        model.addAttribute("tag",question.getTag());
+        model.addAttribute("id",question.getId());
+
+        return "publish";
+    }
 
     @GetMapping("/publish")
     public String publish(){
@@ -24,9 +37,10 @@ public class PublishController {
     }
 
     @PostMapping("/publish")
-    public String doPublish(@RequestParam(name = "title")String title,
-                            @RequestParam(name = "description")String description,
-                            @RequestParam(name = "tag")String tag,
+    public String doPublish(@RequestParam(name = "title",required = false)String title,
+                            @RequestParam(name = "description",required = false)String description,
+                            @RequestParam(name = "tag",required = false)String tag,
+                            @RequestParam(name = "id",required = false)Long id,
                             HttpServletRequest request,
                             Model model){
 
@@ -61,7 +75,8 @@ public class PublishController {
         qusetion.setCreator(user.getId());
         qusetion.setGmtCreate(System.currentTimeMillis());
         qusetion.setGmtModified(qusetion.getGmtCreate());
-        questionMapper.create(qusetion);
+        qusetion.setId(id);
+        questionService.createOrUpdate(qusetion);
         return "redirect:/";
     }
 }

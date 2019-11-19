@@ -2,7 +2,6 @@ package com.xiaoxie.community.controller;
 
 import com.xiaoxie.community.dto.AccessTokenDTO;
 import com.xiaoxie.community.dto.GithubUser;
-import com.xiaoxie.community.mapper.UserMapper;
 import com.xiaoxie.community.model.User;
 import com.xiaoxie.community.provider.GithubProvider;
 import com.xiaoxie.community.service.UserService;
