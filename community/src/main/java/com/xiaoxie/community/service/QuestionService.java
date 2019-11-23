@@ -2,6 +2,9 @@ package com.xiaoxie.community.service;
 
 import com.xiaoxie.community.dto.PaginationDTO;
 import com.xiaoxie.community.dto.QuestionDTO;
+import com.xiaoxie.community.exception.CustomizeErrorCode;
+import com.xiaoxie.community.exception.CustomizeException;
+import com.xiaoxie.community.mapper.QuestionExtMapper;
 import com.xiaoxie.community.mapper.QuestionMapper;
 import com.xiaoxie.community.mapper.UserMapper;
 import com.xiaoxie.community.model.Question;
@@ -22,6 +25,10 @@ public class QuestionService {
     private QuestionMapper questionMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
+
+
     public PaginationDTO list(Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
 
@@ -111,6 +118,9 @@ public class QuestionService {
 
     public QuestionDTO getById(Long id) {
         Question question = questionMapper.selectByPrimaryKey(id);
+        if (question == null){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question,questionDTO);
         User user = userMapper.selectByPrimaryKey(question.getCreator());
@@ -134,7 +144,17 @@ public class QuestionService {
             updateQuestion.setDescription(qusetion.getDescription());
             QuestionExample example = new QuestionExample();
             example.createCriteria().andIdEqualTo(qusetion.getId());
-            questionMapper.updateByExampleSelective(updateQuestion, example);
+            int updated = questionMapper.updateByExampleSelective(updateQuestion, example);
+            if (updated != 1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
+    }
+
+    public void incView(Long id) {
+        Question question = new Question();
+        question.setId(id);
+        question.setViewCount(1);
+        questionExtMapper.incView(question);
     }
 }
