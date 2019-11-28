@@ -46,7 +46,7 @@ body {
 }
 
 .media-body {
-    padding-top: 10px;
+    padding-top: 25px;
 }
 
 .text-desc {
@@ -134,7 +134,7 @@ body {
 
 .menu {
     color: #999;
-    margin-top: 5px;
+    margin-top: 7px;
 }
 
 .menu .icon {

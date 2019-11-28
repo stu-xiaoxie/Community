@@ -1,15 +1,16 @@
 package com.xiaoxie.community.service;
 
+import com.xiaoxie.community.dto.CommentDTO;
 import com.xiaoxie.community.dto.PaginationDTO;
 import com.xiaoxie.community.dto.QuestionDTO;
+import com.xiaoxie.community.enums.CommentTypeEnum;
 import com.xiaoxie.community.exception.CustomizeErrorCode;
 import com.xiaoxie.community.exception.CustomizeException;
+import com.xiaoxie.community.mapper.CommentMapper;
 import com.xiaoxie.community.mapper.QuestionExtMapper;
 import com.xiaoxie.community.mapper.QuestionMapper;
 import com.xiaoxie.community.mapper.UserMapper;
-import com.xiaoxie.community.model.Question;
-import com.xiaoxie.community.model.QuestionExample;
-import com.xiaoxie.community.model.User;
+import com.xiaoxie.community.model.*;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -27,6 +30,8 @@ public class QuestionService {
     private UserMapper userMapper;
     @Autowired
     private QuestionExtMapper questionExtMapper;
+    @Autowired
+    private CommentMapper commentMapper;
 
 
     public PaginationDTO list(Integer page, Integer size) {
@@ -160,4 +165,6 @@ public class QuestionService {
         question.setViewCount(1);
         questionExtMapper.incView(question);
     }
+
+
 }
