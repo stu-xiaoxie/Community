@@ -4,10 +4,7 @@ import com.xiaoxie.community.dto.CommentDTO;
 import com.xiaoxie.community.enums.CommentTypeEnum;
 import com.xiaoxie.community.exception.CustomizeErrorCode;
 import com.xiaoxie.community.exception.CustomizeException;
-import com.xiaoxie.community.mapper.CommentMapper;
-import com.xiaoxie.community.mapper.QuestionExtMapper;
-import com.xiaoxie.community.mapper.QuestionMapper;
-import com.xiaoxie.community.mapper.UserMapper;
+import com.xiaoxie.community.mapper.*;
 import com.xiaoxie.community.model.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +28,8 @@ public class CommentService {
     private QuestionExtMapper questionExtMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private CommentExtMapper commentExtMapper;
 
     @Transactional
     public void insert(Comment comment) {
@@ -50,6 +49,12 @@ public class CommentService {
             }
             commentMapper.insert(comment);
 
+            //增加评论数
+            Comment parentComment = new Comment();
+            parentComment.setId(comment.getParentId());
+            parentComment.setCommentCount(1);
+            commentExtMapper.incCommentCount(parentComment);
+
         }else {
             //回复问题
             Question question = questionMapper.selectByPrimaryKey(comment.getParentId());
@@ -62,32 +67,38 @@ public class CommentService {
         }
     }
     //获取指定问题的回复
-    public List<CommentDTO> listByQuestionById(Long id) {
-        CommentExample example = new CommentExample();
-        example.createCriteria().andParentIdEqualTo(id).andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
-        List<Comment> commentList = commentMapper.selectByExample(example);
-        if (commentList.size() == 0){
+    public List<CommentDTO> listByTargetId(Long id, CommentTypeEnum type) {
+        CommentExample commentExample = new CommentExample();
+        commentExample.createCriteria()
+                .andParentIdEqualTo(id)
+                .andTypeEqualTo(type.getType());
+        commentExample.setOrderByClause("gmt_create desc");
+        List<Comment> comments = commentMapper.selectByExample(commentExample);
+
+        if (comments.size() == 0) {
             return new ArrayList<>();
         }
-        //获取所有评论者
-        Set<Long> commentators = commentList.stream().map(comment -> comment.getCommentator()).collect(Collectors.toSet());
-        List<Long> users = new ArrayList();
-        users.addAll(commentators);
+        // 获取去重的评论人
+        Set<Long> commentators = comments.stream().map(comment -> comment.getCommentator()).collect(Collectors.toSet());
+        List<Long> userIds = new ArrayList();
+        userIds.addAll(commentators);
 
+
+        // 获取评论人并转换为 Map
         UserExample userExample = new UserExample();
         userExample.createCriteria()
-                .andIdIn(users);
-        List<User> userList = userMapper.selectByExample(userExample);
-        Map<Long, User> userMap = userList.stream().collect(Collectors.toMap(user -> user.getId(), user -> user));
+                .andIdIn(userIds);
+        List<User> users = userMapper.selectByExample(userExample);
+        Map<Long, User> userMap = users.stream().collect(Collectors.toMap(user -> user.getId(), user -> user));
 
-        //转换comment为commentDTO
-        List<CommentDTO> commentDTOS = commentList.stream().map(comment -> {
+
+        // 转换 comment 为 commentDTO
+        List<CommentDTO> commentDTOS = comments.stream().map(comment -> {
             CommentDTO commentDTO = new CommentDTO();
-            BeanUtils.copyProperties(comment,commentDTO);
+            BeanUtils.copyProperties(comment, commentDTO);
             commentDTO.setUser(userMap.get(comment.getCommentator()));
             return commentDTO;
         }).collect(Collectors.toList());
-
 
         return commentDTOS;
     }

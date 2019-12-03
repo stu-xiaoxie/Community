@@ -3,6 +3,7 @@ package com.xiaoxie.community.controller;
 import com.xiaoxie.community.dto.CommentCreateDTO;
 import com.xiaoxie.community.dto.CommentDTO;
 import com.xiaoxie.community.dto.QuestionDTO;
+import com.xiaoxie.community.enums.CommentTypeEnum;
 import com.xiaoxie.community.mapper.CommentMapper;
 import com.xiaoxie.community.service.CommentService;
 import com.xiaoxie.community.service.QuestionService;
@@ -25,15 +26,16 @@ public class QuestionController {
 
     @GetMapping("/question/{id}")
     public String question(@PathVariable(name = "id") Long id,
-                           Model model){
+                           Model model) {
         QuestionDTO questionDTO = questionService.getById(id);
-
-        List<CommentDTO> comment = commentService.listByQuestionById(id);
-        model.addAttribute("comments",comment);
-
+        List<QuestionDTO> relatedQuestions = questionService.selectRelated(questionDTO);
+        List<CommentDTO> comment = commentService.listByTargetId(id, CommentTypeEnum.QUESTION);
         //增加阅读数
         questionService.incView(id);
-        model.addAttribute("question",questionDTO);
+        model.addAttribute("question", questionDTO);
+        model.addAttribute("comments", comment);
+        model.addAttribute("relatedQuestions", relatedQuestions);
+
 
         return "question";
     }

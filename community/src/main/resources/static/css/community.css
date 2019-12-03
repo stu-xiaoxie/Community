@@ -41,12 +41,12 @@ body {
 }
 
 .media-object {
-    width: 66px;
-    height: 66px;
+    width: 38px;
+    height: 38px;
 }
 
 .media-body {
-    padding-top: 25px;
+    padding-top: 10px;
 }
 
 .text-desc {
@@ -134,7 +134,7 @@ body {
 
 .menu {
     color: #999;
-    margin-top: 7px;
+    margin-top: 5px;
 }
 
 .menu .icon {
