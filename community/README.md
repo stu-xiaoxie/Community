@@ -18,7 +18,7 @@ java -jar target/community-0.0.1-SNAPSHOT.jar
 ```
 6. 访问项目
 ```
-http://localhost:8887
+http://localhost:8888
 ```
 
 
@@ -49,17 +49,6 @@ http://localhost:8887
 [Live Reload](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei/related)  
 [Postman](https://chrome.google.com/webstore/detail/coohjcphdfgbiolnekdpbcijmhambjff)
 
-## 脚本
-```sql
-CREATE TABLE USER
-(
-    ID int AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    ACCOUNT_ID VARCHAR(100),
-    NAME VARCHAR(50),
-    TOKEN VARCHAR(36),
-    GMT_CREATE BIGINT,
-    GMT_MODIFIED BIGINT
-);
 ```
 ```bash
 mvn flyway:migrate
