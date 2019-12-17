@@ -11,7 +11,7 @@
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
 </head>
 <body>
-<div th:insert="navigation :: nav"></div>
+<div th:insert="~{navigation :: nav}"></div>
 <div class="container-fluid main profile">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
@@ -95,11 +95,12 @@
                 <a href="/profile/replies"
                    th:class="${section == 'replies'}? 'active list-group-item' : 'list-group-item'">
                     最新回复
-                    <span class="badge" th:text="${session.unreadMessage}"></span>
+                    <span class="badge" th:text="${session.unreadCount}"></span>
                 </a>
             </div>
         </div>
     </div>
 </div>
+<div th:insert="~{footer :: foot}"></div>
 </body>
 </html>

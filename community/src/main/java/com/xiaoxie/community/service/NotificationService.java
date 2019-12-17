@@ -90,10 +90,10 @@ public class NotificationService {
 
     public NotificationDTO read(Long id, User user) {
         Notification notification = notificationMapper.selectByPrimaryKey(id);
-        if (notification == null){
+        if (notification == null) {
             throw new CustomizeException(CustomizeErrorCode.NOTIFICATION_NOT_FOUND);
         }
-        if(Objects.equals(notification.getReceiver(),user.getId())){
+        if (!Objects.equals(notification.getReceiver(), user.getId())) {
             throw new CustomizeException(CustomizeErrorCode.READ_NOTIFICATION_FAIL);
         }
 

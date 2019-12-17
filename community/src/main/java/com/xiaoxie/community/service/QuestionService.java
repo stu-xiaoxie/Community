@@ -3,6 +3,7 @@ package com.xiaoxie.community.service;
 import com.xiaoxie.community.dto.CommentDTO;
 import com.xiaoxie.community.dto.PaginationDTO;
 import com.xiaoxie.community.dto.QuestionDTO;
+import com.xiaoxie.community.dto.QuestionQueryDTO;
 import com.xiaoxie.community.enums.CommentTypeEnum;
 import com.xiaoxie.community.exception.CustomizeErrorCode;
 import com.xiaoxie.community.exception.CustomizeException;
@@ -32,16 +33,24 @@ public class QuestionService {
     private UserMapper userMapper;
     @Autowired
     private QuestionExtMapper questionExtMapper;
-    @Autowired
-    private CommentMapper commentMapper;
 
 
-    public PaginationDTO list(Integer page, Integer size) {
+    public PaginationDTO list(String search, Integer page, Integer size) {
+
+
+        if (StringUtils.isNotBlank(search)) {
+            String[] split = StringUtils.split(search, " ");
+            search = Arrays.stream(split).collect(Collectors.joining("|"));
+        }
+
+
         PaginationDTO paginationDTO = new PaginationDTO();
 
         Integer totalPage;
 
-        Integer totalCount = (int) questionMapper.countByExample(new QuestionExample());
+        QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
+        questionQueryDTO.setSearch(search);
+        Integer totalCount = questionExtMapper.countBySearch(questionQueryDTO);
 
 
         if (totalCount % size == 0) {
@@ -66,7 +75,10 @@ public class QuestionService {
         QuestionExample questionExample = new QuestionExample();
         questionExample.createCriteria();
         questionExample.setOrderByClause("gmt_create desc");
-        List<Question> questions = questionMapper.selectByExampleWithBLOBsWithRowbounds(questionExample, new RowBounds(offset, size));
+        questionQueryDTO.setSize(size);
+        questionQueryDTO.setPage(page);
+
+        List<Question> questions = questionExtMapper.selectBySearch(questionQueryDTO);
         List<QuestionDTO> questionDTOS = new ArrayList<>();
 
         for (Question question : questions) {

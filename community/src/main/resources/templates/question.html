@@ -7,10 +7,14 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/community.css">
+    <link rel="stylesheet" href="/css/editormd.preview.min.css">
     <script src="/js/jquery-3.4.1.min.js" type="application/javascript"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
     <script src="/js/community.js" type="application/javascript"></script>
     <script src="/js/moment.js" type="application/javascript"></script>
+    <script src="/js/editormd.min.js" type="application/javascript"></script>
+    <script src="/js/lib/marked.min.js" type="application/javascript"></script>
+    <script src="/js/lib/prettify.min.js" type="application/javascript"></script>
 </head>
 <body>
 <div th:insert="navigation :: nav"></div>
@@ -28,9 +32,18 @@
              </span>
                 <hr/>
                 <!--内容-->
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${question.description}"></div>
-                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="question-view">
+                    <textarea style="display: none" th:text="${question.description}"></textarea>
+                </div>
+                <script>
+                    $(function () {
+                        editormd.markdownToHTML("question-view",{
+
+                        });
+                    });
+                </script>
                 <!--标签-->
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <span class="label label-info question-tag" th:each="tag : ${question.tag.split(',')}">
                         <span class="glyphicon glyphicon-tags"></span>
@@ -103,7 +116,7 @@
                         </div>
                         <div class="media-body">
                             <h5 class="media-heading">
-                                <span th:text="${session.user != null ? session.user.name : '匿名用户'}"></span>
+                                <span th:text="${session.user != null ? session.user.name : '未登录不能用'}"></span>
                             </h5>
                         </div>
                     </div>
@@ -146,5 +159,6 @@
         </div>
     </div>
 </div>
+<div th:insert="footer :: foot"></div>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.xiaoxie.community.mapper;
 
+import com.xiaoxie.community.dto.QuestionQueryDTO;
 import com.xiaoxie.community.model.Question;
 import com.xiaoxie.community.model.QuestionExample;
 import org.apache.ibatis.annotations.Param;
@@ -13,4 +14,8 @@ public interface QuestionExtMapper {
     int incCommentCount(Question record);
 
     List<Question> selectRelated(Question question);
+
+    Integer countBySearch(QuestionQueryDTO questionQueryDTO);
+
+    List<Question> selectBySearch(QuestionQueryDTO questionQueryDTO);
 }
